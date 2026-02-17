@@ -26,10 +26,10 @@ export const LoginPage = () => {
       <form className="form-grid" onSubmit={onSubmit}>
         <input placeholder="Почта" value={email} onChange={(e) => setEmail(e.target.value)} />
         <input placeholder="Пароль" type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
-        <button type="submit">Войти</button>
+        <button type="submit" className="login-button">Войти</button>
       </form>
       {error ? <p className="muted">{error}</p> : null}
-      <p className="muted">Нет аккаунта? <Link to="/register">Регистрация</Link></p>
+      <p className="muted">Нет аккаунта? <Link className="auth-link" to="/register">Регистрация</Link></p>
     </div>
   );
 };

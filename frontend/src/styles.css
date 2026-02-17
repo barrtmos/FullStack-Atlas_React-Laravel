@@ -80,11 +80,37 @@ button {
   background: var(--accent);
   color: white;
   cursor: pointer;
-  transition: background 0.2s ease;
+  transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 button:hover {
   background: var(--accent-soft);
+}
+
+.login-button {
+  background: linear-gradient(135deg, #b91d1d 0%, #d62c2c 52%, #ff5555 100%);
+  box-shadow:
+    0 0 0 1px rgba(255, 160, 160, 0.2) inset,
+    0 10px 18px rgba(150, 20, 20, 0.45),
+    0 0 18px rgba(210, 42, 42, 0.35);
+}
+
+.login-button:hover {
+  background: linear-gradient(135deg, #cf2424 0%, #ec3636 52%, #ff6b6b 100%);
+  transform: translateY(-1px);
+}
+
+.auth-link {
+  color: #ff7b7b;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  font-weight: 600;
+  transition: color 0.2s ease, text-shadow 0.2s ease;
+}
+
+.auth-link:hover {
+  color: #ffd2d2;
+  text-shadow: 0 0 8px rgba(255, 102, 102, 0.6);
 }
 
 button.secondary {

@@ -11,6 +11,9 @@ type Node = {
 };
 
 type Edge = { from: string; to: string };
+const NODE_WIDTH = 210;
+const NODE_HEIGHT = 62;
+const NODE_CENTER_Y = NODE_HEIGHT / 2;
 
 const nodes: Node[] = [
   { id: 'page.posts', label: 'PostsList', type: 'component', x: 40, y: 40, file: 'frontend/src/pages/PostsListPage.tsx' },
@@ -54,7 +57,7 @@ export const ArchitectureMap = () => {
           const from = nodes.find((node) => node.id === edge.from);
           const to = nodes.find((node) => node.id === edge.to);
           if (!from || !to) return null;
-          return <line key={`${edge.from}-${edge.to}`} x1={from.x + 120} y1={from.y + 20} x2={to.x} y2={to.y + 20} stroke="#b8b3a4" strokeWidth="2" />;
+          return <line key={`${edge.from}-${edge.to}`} x1={from.x + (NODE_WIDTH * 0.6)} y1={from.y + NODE_CENTER_Y} x2={to.x} y2={to.y + NODE_CENTER_Y} stroke="#b8b3a4" strokeWidth="2" />;
         })}
 
         {nodes.map((node) => {
@@ -65,13 +68,13 @@ export const ArchitectureMap = () => {
 
           return (
             <g key={node.id}>
-              <rect x={node.x} y={node.y} width="200" height="48" rx="8" fill={fill} stroke={stroke} />
+              <rect x={node.x} y={node.y} width={NODE_WIDTH} height={NODE_HEIGHT} rx="8" fill={fill} stroke={stroke} />
               <clipPath id={clipId}>
-                <rect x={node.x + 8} y={node.y + 6} width="184" height="36" rx="4" />
+                <rect x={node.x + 6} y={node.y + 3} width={NODE_WIDTH - 12} height={NODE_HEIGHT - 6} rx="4" />
               </clipPath>
               <title>{`${node.label}\n${node.file}`}</title>
-              <text x={node.x + 10} y={node.y + 20} clipPath={`url(#${clipId})`} style={{ fontWeight: 600, fontSize: 13 }}>{truncate(node.label, 24)}</text>
-              <text x={node.x + 10} y={node.y + 36} clipPath={`url(#${clipId})`} style={{ fontSize: 11, fill: '#6d6d6d' }}>{truncate(node.file, 30)}</text>
+              <text x={node.x + 10} y={node.y + 24} clipPath={`url(#${clipId})`} style={{ fontWeight: 700, fontSize: 20 }}>{truncate(node.label, 22)}</text>
+              <text x={node.x + 10} y={node.y + 48} clipPath={`url(#${clipId})`} style={{ fontSize: 16, fill: '#6d6d6d' }}>{truncate(node.file, 23)}</text>
             </g>
           );
         })}
