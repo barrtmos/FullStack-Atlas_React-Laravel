@@ -26,8 +26,11 @@ export default function App() {
     <BrowserRouter>
       <div className="app-shell">
         <main className="main-area">
-          <div className="row" style={{ justifyContent: 'space-between', marginBottom: 8 }}>
-            <h1 style={{ margin: 0 }}>Песочница + Режим объяснения</h1>
+          <div className="row app-topbar" style={{ justifyContent: 'space-between', marginBottom: 8 }}>
+            <div className="logo-frame" aria-label="Trace Sandbox">
+              <img className="app-logo" src="/logo.png" alt="Trace Sandbox" />
+              <span className="logo-vignette" aria-hidden />
+            </div>
             <small className="muted">Переключить панель: Ctrl + `</small>
           </div>
           <ArchitectureMap />

@@ -1,14 +1,14 @@
 :root {
   --bg: #0f050b;
-  --bg-soft: #1a0b13;
-  --panel: #1a0d17;
-  --panel-2: #23101c;
-  --text: #f3d9e6;
-  --muted: #b28d9f;
-  --accent: #d13574;
-  --accent-soft: #ff4b9a;
-  --danger: #b82a4f;
-  --line: #4b1f34;
+  --bg-soft: #1a090d;
+  --panel: #1b0b10;
+  --panel-2: #241015;
+  --text: #f5dcdf;
+  --muted: #c1959d;
+  --accent: #d22a2a;
+  --accent-soft: #f04040;
+  --danger: #b61f1f;
+  --line: #542126;
 }
 
 * {
@@ -19,9 +19,9 @@ body {
   margin: 0;
   font-family: 'IBM Plex Sans', 'Segoe UI', sans-serif;
   background:
-    radial-gradient(circle at 12% 8%, #3d1228 0%, transparent 38%),
-    radial-gradient(circle at 88% 18%, #2a0f3f 0%, transparent 30%),
-    linear-gradient(140deg, var(--bg) 0%, #120711 48%, #09040c 100%);
+    radial-gradient(circle at 12% 8%, #4a1016 0%, transparent 38%),
+    radial-gradient(circle at 88% 18%, #381015 0%, transparent 30%),
+    linear-gradient(140deg, var(--bg) 0%, #13070a 48%, #090406 100%);
   color: var(--text);
 }
 
@@ -88,8 +88,8 @@ button:hover {
 }
 
 button.secondary {
-  background: #3a1d2c;
-  color: #f5dce8;
+  background: #3d1b21;
+  color: #f6e0e2;
 }
 
 button.danger {
@@ -106,7 +106,7 @@ button.danger {
 .trace-panel {
   width: min(540px, 45vw);
   border-left: 1px solid var(--line);
-  background: #120914;
+  background: #13080c;
   display: grid;
   grid-template-rows: auto auto 1fr auto;
 }
@@ -133,13 +133,13 @@ button.danger {
   border: 1px solid var(--line);
   border-radius: 10px;
   padding: 8px;
-  background: #20101a;
+  background: #221016;
   cursor: pointer;
 }
 
 .trace-item.active {
   border-color: var(--accent);
-  background: #3a1324;
+  background: #3f1317;
 }
 
 .row {
@@ -163,7 +163,7 @@ button.danger {
   padding: 3px 8px;
   font-size: 12px;
   border: 1px solid var(--line);
-  background: #2b1220;
+  background: #301015;
 }
 
 .muted {
@@ -185,8 +185,39 @@ button.danger {
 .arch-map {
   border: 1px solid var(--line);
   border-radius: 12px;
-  background: #170b14;
+  background: #180a0e;
   padding: 10px;
+}
+
+.app-topbar {
+  min-height: 96px;
+}
+
+.logo-frame {
+  position: relative;
+  display: inline-block;
+  border-radius: 18px;
+  overflow: hidden;
+  border: 1px solid #6a2a2a;
+  box-shadow:
+    0 10px 24px rgba(0, 0, 0, 0.45),
+    0 0 0 1px rgba(210, 42, 42, 0.2) inset;
+}
+
+.app-logo {
+  display: block;
+  height: 88px;
+  width: auto;
+  object-fit: contain;
+}
+
+.logo-vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at center, transparent 48%, rgba(0, 0, 0, 0.35) 100%),
+    linear-gradient(160deg, rgba(255, 255, 255, 0.04), rgba(0, 0, 0, 0.15));
 }
 
 @media (max-width: 900px) {

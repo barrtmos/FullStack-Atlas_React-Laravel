@@ -35,6 +35,7 @@ const isActiveNode = (node: Node, eventDump: string) => {
 };
 
 const EMPTY_EVENTS: unknown[] = [];
+const truncate = (value: string, limit: number) => (value.length > limit ? `${value.slice(0, limit - 1)}...` : value);
 
 export const ArchitectureMap = () => {
   const activeTraceId = useTraceStore((s) => s.activeTraceId);
@@ -48,7 +49,7 @@ export const ArchitectureMap = () => {
         <strong>Карта архитектуры</strong>
         <span className="muted">Активный trace: {activeTraceId || 'нет'}</span>
       </div>
-      <svg viewBox="0 0 950 220" width="100%" height="220">
+      <svg viewBox="0 0 980 220" width="100%" height="220">
         {edges.map((edge) => {
           const from = nodes.find((node) => node.id === edge.from);
           const to = nodes.find((node) => node.id === edge.to);
@@ -60,12 +61,17 @@ export const ArchitectureMap = () => {
           const active = isActiveNode(node, eventDump);
           const fill = active ? '#d4ebfb' : '#fff';
           const stroke = active ? '#1b6ca8' : '#cfc9b7';
+          const clipId = `node-clip-${node.id.replace(/[^a-zA-Z0-9_-]/g, '-')}`;
 
           return (
             <g key={node.id}>
               <rect x={node.x} y={node.y} width="200" height="48" rx="8" fill={fill} stroke={stroke} />
-              <text x={node.x + 10} y={node.y + 20} style={{ fontWeight: 600, fontSize: 13 }}>{node.label}</text>
-              <text x={node.x + 10} y={node.y + 36} style={{ fontSize: 11, fill: '#6d6d6d' }}>{node.file}</text>
+              <clipPath id={clipId}>
+                <rect x={node.x + 8} y={node.y + 6} width="184" height="36" rx="4" />
+              </clipPath>
+              <title>{`${node.label}\n${node.file}`}</title>
+              <text x={node.x + 10} y={node.y + 20} clipPath={`url(#${clipId})`} style={{ fontWeight: 600, fontSize: 13 }}>{truncate(node.label, 24)}</text>
+              <text x={node.x + 10} y={node.y + 36} clipPath={`url(#${clipId})`} style={{ fontSize: 11, fill: '#6d6d6d' }}>{truncate(node.file, 30)}</text>
             </g>
           );
         })}
