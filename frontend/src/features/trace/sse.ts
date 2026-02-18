@@ -1,8 +1,13 @@
 import { useTraceStore } from './store';
 
 const API_URL = import.meta.env.VITE_API_URL ?? 'http://127.0.0.1:8000';
+const SSE_ENABLED = import.meta.env.VITE_TRACE_SSE_ENABLED === 'true';
 
 export const ensureTraceStream = (traceId: string) => {
+  if (!SSE_ENABLED) {
+    return;
+  }
+
   const state = useTraceStore.getState();
   if (!traceId || state.sseMap[traceId]) {
     return;

@@ -40,11 +40,17 @@ textarea {
 .app-shell {
   display: grid;
   grid-template-columns: 1fr auto;
-  min-height: 100vh;
+  height: 100vh;
+  overflow: hidden;
 }
 
 .main-area {
   padding: 20px;
+  min-height: 0;
+  border-right: 1px solid #5b2027;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
 }
 
 .card {
@@ -54,6 +60,12 @@ textarea {
   padding: 16px;
   margin-bottom: 14px;
   box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+}
+
+.auth-card {
+  flex: 1;
+  min-height: 0;
+  margin-bottom: 0;
 }
 
 .form-grid {
@@ -113,6 +125,10 @@ button:hover {
   text-shadow: 0 0 8px rgba(255, 102, 102, 0.6);
 }
 
+.auth-hint {
+  margin-top: 18px;
+}
+
 button.secondary {
   background: #3d1b21;
   color: #f6e0e2;
@@ -131,10 +147,17 @@ button.danger {
 
 .trace-panel {
   width: min(540px, 45vw);
-  border-left: 1px solid var(--line);
-  background: #13080c;
+  border-left: 1px solid #114b75;
+  background:
+    radial-gradient(circle at 8% 6%, rgba(18, 93, 157, 0.3) 0%, transparent 38%),
+    linear-gradient(155deg, #050b16 0%, #07111f 55%, #040913 100%);
   display: grid;
-  grid-template-rows: auto auto 1fr auto;
+  grid-template-rows: auto auto minmax(0, 1fr) auto;
+  box-shadow:
+    inset 0 0 0 1px rgba(70, 170, 255, 0.15),
+    0 0 24px rgba(17, 124, 211, 0.25);
+  max-height: 100vh;
+  min-height: 0;
 }
 
 .trace-panel.hidden {
@@ -145,7 +168,8 @@ button.danger {
 .trace-filters,
 .trace-detail {
   padding: 10px;
-  border-bottom: 1px solid var(--line);
+  border-bottom: 1px solid #114b75;
+  background: rgba(7, 17, 33, 0.62);
 }
 
 .trace-list {
@@ -153,19 +177,56 @@ button.danger {
   padding: 10px;
   display: grid;
   gap: 8px;
+  min-height: 0;
+  align-content: start;
+  grid-auto-rows: min-content;
+}
+
+.trace-panel input,
+.trace-panel textarea,
+.trace-panel select {
+  background: rgba(9, 27, 49, 0.9);
+  border-color: #1f679e;
+  color: #cfeaff;
+}
+
+.trace-panel .muted {
+  color: #82afd2;
+}
+
+.trace-detail {
+  overflow: hidden;
+  margin-top: auto;
+  border-bottom: 0;
+  padding: 10px;
+}
+
+.trace-detail-frame {
+  border: 1px solid #1d5f91;
+  border-radius: 10px;
+  background: rgba(7, 17, 33, 0.75);
+  padding: 10px;
+}
+
+.trace-detail pre {
+  margin-top: 8px !important;
+  max-height: 24vh;
+  overflow: auto;
 }
 
 .trace-item {
-  border: 1px solid var(--line);
+  border: 1px solid #1d5f91;
   border-radius: 10px;
   padding: 8px;
-  background: #221016;
+  background: rgba(8, 18, 34, 0.88);
   cursor: pointer;
+  height: fit-content;
 }
 
 .trace-item.active {
-  border-color: var(--accent);
-  background: #3f1317;
+  border-color: #49b2ff;
+  background: rgba(18, 61, 103, 0.55);
+  box-shadow: 0 0 12px rgba(73, 178, 255, 0.35);
 }
 
 .row {
@@ -188,8 +249,9 @@ button.danger {
   border-radius: 100px;
   padding: 3px 8px;
   font-size: 12px;
-  border: 1px solid var(--line);
-  background: #301015;
+  border: 1px solid #2e82bf;
+  background: rgba(8, 34, 63, 0.8);
+  color: #9ed8ff;
 }
 
 .muted {
@@ -201,18 +263,43 @@ button.danger {
   border-collapse: collapse;
 }
 
+.posts-table-wrap {
+  width: 100%;
+  overflow-x: auto;
+}
+
 .posts-table th,
 .posts-table td {
   border-bottom: 1px solid var(--line);
   text-align: left;
   padding: 8px;
+  vertical-align: top;
+}
+
+.posts-table .actions-cell {
+  min-width: 190px;
+}
+
+.posts-table .actions-cell .row {
+  flex-wrap: wrap;
+}
+
+.posts-table .actions-cell button {
+  white-space: nowrap;
 }
 
 .arch-map {
   border: 1px solid var(--line);
   border-radius: 12px;
   background: #180a0e;
-  padding: 10px;
+  padding: 10px 10px 6px;
+}
+
+.route-area {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
 }
 
 .app-topbar {
@@ -244,6 +331,10 @@ button.danger {
   background:
     radial-gradient(circle at center, transparent 48%, rgba(0, 0, 0, 0.35) 100%),
     linear-gradient(160deg, rgba(255, 255, 255, 0.04), rgba(0, 0, 0, 0.15));
+}
+
+.trace-active-line {
+  margin-top: 6px;
 }
 
 @media (max-width: 900px) {

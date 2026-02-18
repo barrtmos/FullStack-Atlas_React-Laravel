@@ -73,11 +73,18 @@ api.interceptors.response.use(
   (error) => {
     const traceId = error.response?.headers?.['x-trace-id'] ?? getActiveTraceId();
     if (traceId) {
+      const data = error.response?.data;
       useTraceStore.getState().pushEvent({
         trace_id: traceId,
         type: 'error',
         message: error.message,
         status: error.response?.status,
+        method: error.config?.method?.toUpperCase(),
+        url: `${error.config?.baseURL ?? ''}${error.config?.url ?? ''}`,
+        error_class: data?.exception,
+        backend_message: data?.message,
+        validation_errors: data?.errors,
+        body_preview: bodyPreview(data),
       });
     }
     return Promise.reject(error);

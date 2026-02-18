@@ -1,8 +1,10 @@
 export type TraceEventType =
   | 'ui_event'
+  | 'input_batch'
   | 'api_request'
   | 'api_response'
   | 'react_render'
+  | 'react_render_batch'
   | 'request_received'
   | 'query_executed'
   | 'response_sent'

@@ -13,7 +13,7 @@ export default function App() {
     applyAuthHeader();
 
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.ctrlKey && event.key === '`') {
+      if (event.ctrlKey && (event.key === '/' || event.code === 'Slash')) {
         useTraceStore.setState((state) => ({ panelOpen: !state.panelOpen }));
       }
     };
@@ -31,10 +31,12 @@ export default function App() {
               <img className="app-logo" src="/logo.png" alt="Trace Sandbox" />
               <span className="logo-vignette" aria-hidden />
             </div>
-            <small className="muted">Переключить панель: Ctrl + `</small>
+            <small className="muted">Панель трекинга: Ctrl + /</small>
           </div>
           <ArchitectureMap />
-          <AppRouter />
+          <div className="route-area">
+            <AppRouter />
+          </div>
         </main>
         <TraceDevTools />
       </div>

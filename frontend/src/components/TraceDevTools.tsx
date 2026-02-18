@@ -28,9 +28,12 @@ export const TraceDevTools = () => {
 
   return (
     <aside className="trace-panel">
-      <div className="trace-header row wrap">
-        <strong>Режим объяснения</strong>
-        <span className="badge">{activeTraceId || 'нет trace'}</span>
+      <div className="trace-header">
+        <strong>Панель трекинга</strong>
+        <div className="row wrap trace-active-line">
+          <span className="muted">Активный trace:</span>
+          <span className="badge">{activeTraceId || 'нет trace'}</span>
+        </div>
       </div>
 
       <div className="trace-filters grid-2">
@@ -57,8 +60,10 @@ export const TraceDevTools = () => {
       </div>
 
       <div className="trace-detail">
-        <strong>Детали</strong>
-        <pre style={{ whiteSpace: 'pre-wrap', margin: 0 }}>{JSON.stringify(selected ?? {}, null, 2)}</pre>
+        <div className="trace-detail-frame">
+          <strong>Детали</strong>
+          <pre style={{ whiteSpace: 'pre-wrap', margin: 0 }}>{JSON.stringify(selected ?? {}, null, 2)}</pre>
+        </div>
       </div>
     </aside>
   );

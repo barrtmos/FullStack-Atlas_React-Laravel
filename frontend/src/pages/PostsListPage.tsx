@@ -66,24 +66,28 @@ export const PostsListPage = () => {
         </select>
       </div>
 
-      <table className="posts-table">
-        <thead>
-          <tr><th>ID</th><th>Заголовок</th><th>Статус</th><th>Действия</th></tr>
-        </thead>
-        <tbody>
-          {posts.map((post) => (
-            <tr key={post.id}>
-              <td>{post.id}</td>
-              <td><Link to={`/posts/${post.id}`}>{post.title}</Link></td>
-              <td>{statusLabel[post.status]}</td>
-              <td className="row">
-                <Link to={`/posts/${post.id}/edit`}><button className="secondary">Изменить</button></Link>
-                <button className="danger" onClick={() => void onDelete(post.id)}>Удалить</button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <div className="posts-table-wrap">
+        <table className="posts-table">
+          <thead>
+            <tr><th>ID</th><th>Заголовок</th><th>Статус</th><th>Действия</th></tr>
+          </thead>
+          <tbody>
+            {posts.map((post) => (
+              <tr key={post.id}>
+                <td>{post.id}</td>
+                <td><Link to={`/posts/${post.id}`}>{post.title}</Link></td>
+                <td>{statusLabel[post.status]}</td>
+                <td className="actions-cell">
+                  <div className="row wrap">
+                    <Link to={`/posts/${post.id}/edit`}><button className="secondary">Изменить</button></Link>
+                    <button className="danger" onClick={() => void onDelete(post.id)}>Удалить</button>
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
 
       <div className="row" style={{ marginTop: 10 }}>
         <button className="secondary" disabled={page <= 1} onClick={() => void load(page - 1)}>Назад</button>

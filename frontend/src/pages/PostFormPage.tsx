@@ -2,6 +2,7 @@ import { FormEvent, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { createPost, fetchPost, updatePost } from '@/features/posts/api';
 import { startTrace } from '@/features/trace/actions';
+import { flushAllInputBatches, flushInputField, recordInputChange } from '@/features/trace/batching';
 
 export const PostFormPage = () => {
   const { id } = useParams();
@@ -27,6 +28,7 @@ export const PostFormPage = () => {
 
   const onSubmit = async (event: FormEvent) => {
     event.preventDefault();
+    flushAllInputBatches();
     startTrace('submit', isEdit ? `update-post-${id}` : 'create-post');
 
     if (isEdit) {
@@ -42,8 +44,25 @@ export const PostFormPage = () => {
     <div className="card">
       <h2>{isEdit ? 'Редактировать пост' : 'Создать пост'}</h2>
       <form className="form-grid" onSubmit={onSubmit}>
-        <input placeholder="Заголовок" value={title} onChange={(e) => setTitle(e.target.value)} />
-        <textarea rows={8} placeholder="Текст" value={body} onChange={(e) => setBody(e.target.value)} />
+        <input
+          placeholder="Заголовок"
+          value={title}
+          onChange={(e) => {
+            recordInputChange('post.title', title, e.target.value);
+            setTitle(e.target.value);
+          }}
+          onBlur={() => flushInputField('post.title')}
+        />
+        <textarea
+          rows={8}
+          placeholder="Текст"
+          value={body}
+          onChange={(e) => {
+            recordInputChange('post.body', body, e.target.value);
+            setBody(e.target.value);
+          }}
+          onBlur={() => flushInputField('post.body')}
+        />
         <select value={status} onChange={(e) => setStatus(e.target.value as 'draft' | 'published' | 'archived')}>
           <option value="draft">черновик</option>
           <option value="published">опубликован</option>

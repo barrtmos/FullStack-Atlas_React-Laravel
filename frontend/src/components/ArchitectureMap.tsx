@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import { useTraceStore } from '@/features/trace/store';
+import { useLocation } from 'react-router-dom';
 
 type Node = {
   id: string;
@@ -32,27 +33,92 @@ const edges: Edge[] = [
   { from: 'ctl.posts', to: 'tbl.posts' },
 ];
 
-const isActiveNode = (node: Node, eventDump: string) => {
-  const keys = [node.label, node.id, node.file, '/api/posts', 'PostController', 'posts'];
-  return keys.some((key) => eventDump.toLowerCase().includes(key.toLowerCase()));
-};
-
 const EMPTY_EVENTS: unknown[] = [];
 const truncate = (value: string, limit: number) => (value.length > limit ? `${value.slice(0, limit - 1)}...` : value);
 
-export const ArchitectureMap = () => {
-  const activeTraceId = useTraceStore((s) => s.activeTraceId);
-  const activeEvents = useTraceStore((s) => s.traces[s.activeTraceId] ?? EMPTY_EVENTS);
+const toText = (value: unknown) => String(value ?? '').toLowerCase();
 
-  const eventDump = useMemo(() => JSON.stringify(activeEvents), [activeEvents]);
+const buildActiveNodeSet = (pathname: string, events: unknown[]): Set<string> => {
+  const active = new Set<string>();
+  const path = pathname.toLowerCase();
+
+  // Route-level highlighting for the current screen.
+  if (path.startsWith('/posts')) {
+    active.add('page.posts');
+  }
+  if (path.includes('/create') || path.includes('/edit')) {
+    active.add('page.postform');
+  }
+
+  for (const raw of events) {
+    const event = (raw ?? {}) as Record<string, unknown>;
+    const type = toText(event.type);
+    const method = toText(event.method);
+    const url = toText(event.url);
+    const requestPath = toText(event.path);
+    const controller = toText(event.controller);
+    const sql = toText(event.sql);
+    const target = toText(event.target);
+    const action = toText(event.action);
+
+    if (target.includes('post') || action.includes('post')) {
+      active.add('page.posts');
+    }
+
+    if (target.includes('create') || target.includes('edit') || action.includes('create') || action.includes('edit')) {
+      active.add('page.postform');
+    }
+
+    if (url.includes('/api/posts') || requestPath.includes('/api/posts') || requestPath === 'api/posts') {
+      if (method === 'post') {
+        active.add('api.postStore');
+      } else {
+        active.add('api.posts');
+      }
+    }
+
+    if (controller.includes('postcontroller')) {
+      active.add('ctl.posts');
+    }
+
+    if (sql.includes('posts')) {
+      active.add('tbl.posts');
+    }
+
+    // Backend request_received might not carry method in some edge events.
+    if (type === 'request_received' && requestPath.includes('posts')) {
+      active.add('api.posts');
+      active.add('ctl.posts');
+    }
+  }
+
+  return active;
+};
+
+export const ArchitectureMap = () => {
+  const activeEvents = useTraceStore((s) => s.traces[s.activeTraceId] ?? EMPTY_EVENTS);
+  const location = useLocation();
+
+  const activeNodes = useMemo(
+    () => buildActiveNodeSet(location.pathname, activeEvents),
+    [location.pathname, activeEvents],
+  );
 
   return (
     <div className="arch-map card">
-      <div className="row" style={{ justifyContent: 'space-between' }}>
+      <div className="row">
         <strong>Карта архитектуры</strong>
-        <span className="muted">Активный trace: {activeTraceId || 'нет'}</span>
       </div>
-      <svg viewBox="0 0 980 220" width="100%" height="220">
+      <svg viewBox="0 0 980 220" width="100%" height="154">
+        <defs>
+          <filter id="nodeGlow" x="-30%" y="-30%" width="160%" height="160%">
+            <feGaussianBlur stdDeviation="3.2" result="blur" />
+            <feMerge>
+              <feMergeNode in="blur" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
+        </defs>
         {edges.map((edge) => {
           const from = nodes.find((node) => node.id === edge.from);
           const to = nodes.find((node) => node.id === edge.to);
@@ -61,20 +127,32 @@ export const ArchitectureMap = () => {
         })}
 
         {nodes.map((node) => {
-          const active = isActiveNode(node, eventDump);
-          const fill = active ? '#d4ebfb' : '#fff';
-          const stroke = active ? '#1b6ca8' : '#cfc9b7';
+          const active = activeNodes.has(node.id);
+          const fill = active ? '#59d7ff' : '#fff';
+          const stroke = active ? '#00eeff' : '#cfc9b7';
+          const titleColor = active ? '#001628' : '#111';
+          const subColor = active ? '#003c67' : '#6d6d6d';
           const clipId = `node-clip-${node.id.replace(/[^a-zA-Z0-9_-]/g, '-')}`;
 
           return (
             <g key={node.id}>
-              <rect x={node.x} y={node.y} width={NODE_WIDTH} height={NODE_HEIGHT} rx="8" fill={fill} stroke={stroke} />
+              <rect
+                x={node.x}
+                y={node.y}
+                width={NODE_WIDTH}
+                height={NODE_HEIGHT}
+                rx="8"
+                fill={fill}
+                stroke={stroke}
+                strokeWidth={active ? 2.5 : 1}
+                filter={active ? 'url(#nodeGlow)' : undefined}
+              />
               <clipPath id={clipId}>
                 <rect x={node.x + 6} y={node.y + 3} width={NODE_WIDTH - 12} height={NODE_HEIGHT - 6} rx="4" />
               </clipPath>
               <title>{`${node.label}\n${node.file}`}</title>
-              <text x={node.x + 10} y={node.y + 24} clipPath={`url(#${clipId})`} style={{ fontWeight: 700, fontSize: 20 }}>{truncate(node.label, 22)}</text>
-              <text x={node.x + 10} y={node.y + 48} clipPath={`url(#${clipId})`} style={{ fontSize: 16, fill: '#6d6d6d' }}>{truncate(node.file, 23)}</text>
+              <text x={node.x + 10} y={node.y + 24} clipPath={`url(#${clipId})`} style={{ fontWeight: 700, fontSize: 20, fill: titleColor }}>{truncate(node.label, 22)}</text>
+              <text x={node.x + 10} y={node.y + 48} clipPath={`url(#${clipId})`} style={{ fontSize: 16, fill: subColor }}>{truncate(node.file, 23)}</text>
             </g>
           );
         })}

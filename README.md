@@ -109,6 +109,12 @@ php backend/artisan migrate
 npm run dev
 ```
 
+По умолчанию SSE-трассировка отключена на frontend (чтобы не блокировать запросы на встроенном `php -S`).
+Для включения создайте `frontend/.env` с:
+```bash
+VITE_TRACE_SSE_ENABLED=true
+```
+
 После запуска:
 - Frontend: `http://localhost:5173`
 - Backend: `http://127.0.0.1:8000`
